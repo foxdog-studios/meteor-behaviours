@@ -1,8 +1,8 @@
 # Behaviours
 
-Inherit, extend, and reuse the code behind your Meteor templates. Here's an
-example that's too simple to justify the use of Behaviours, but think about
-larger, more complex templates. [See it live][1].
+**Inherit, extend, and reuse the code behind your Meteor templates.**
+
+Here's an example that's too simple to justify the use of Behaviours, but think about larger, more complex templates. [See it live][1].
 
 
 1.  Create some templates:
@@ -11,9 +11,7 @@ larger, more complex templates. [See it live][1].
     <template name="input">
       <input type="{{type}}" class="form-control">
     </template>
-
     <template name="dateInput">{{> input inputData}}</template>
-
     <template name="numberInput">{{> input inputData}}</template>
     ```
 
