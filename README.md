@@ -42,7 +42,6 @@ larger, more complex templates. [See it live][1].
       @helpers: 'inputData': '_makeInputData'
       @events: 'input input': '_onChange'
 
-
     class SessionInputBehaviour extends AbstractInputBehaviour
       init: (type, @_key) => super type
       get: => Session.get @_key
