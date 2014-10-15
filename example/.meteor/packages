@@ -6,4 +6,6 @@
 meteor-platform
 coffeescript
 fds:behaviours
+pinglamb:bootstrap3
+mrt:moment
 

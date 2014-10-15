@@ -1,0 +1,39 @@
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h1>Behaviours example</h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <form role="form">
+          {{> dateInput   id="date"   labelText="Date"  }}
+          {{> numberInput id="number" labelText="Number"}}
+        </form>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <pre>Session.get('dateKey')   -> {{date}}</pre>
+        <pre>Session.get('numberKey') -> {{number}}</pre>
+      </div>
+    </div>
+  </div>
+</body>
+
+<template name="input">
+  <div class="form-group">
+    <label class="control-label" for="{{id}}">{{labelText}}</label>
+    <input type="{{type}}" class="form-control" id="{{id}}">
+  </div>
+</template>
+
+<template name="dateInput">
+  {{> input inputData}}
+</template>
+
+<template name="numberInput">
+  {{> input inputData}}
+</template>
+
