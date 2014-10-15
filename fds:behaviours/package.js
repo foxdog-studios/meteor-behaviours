@@ -1,6 +1,6 @@
 Package.describe({
   name: 'fds:behaviours',
-  summary: 'Structured code reuse for template',
+  summary: "[DON'T USE] Structured code reuse for template",
   version: '0.0.0',
   git: 'https://github.com/foxdog-studios/meteor-behaviours.git'
 });
