@@ -28,6 +28,11 @@ class InputBehaviourFactory extends FDS.AbstractBehaviourFactroy
 InputBehaviourFactory.attach 'input'
 ```
 
+```Handlebars
+<body>{{> input type="number"}}</body>
+```
+
+
 ## Install
 
 ```ShellSession
