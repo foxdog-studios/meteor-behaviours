@@ -13,6 +13,7 @@ Package.onUse(function(api) {
   api.addFiles([
     'client/lib/package_scope.js',
       'client/lib/behaviour.coffee',
+      'client/lib/behaviour_factory.coffee',
       'client/lib/behaviours.coffee',
       'client/lib/export.js',
   ], 'client');
@@ -23,6 +24,5 @@ Package.onTest(function(api) {
   api.use('tinytest');
   api.use('coffeescript');
   api.use('fds:behaviours');
-  api.addFiles('tests.coffee', 'client');
 });
 

@@ -1,76 +1,58 @@
 if Meteor.isClient
   Template.body.helpers
-    date: ->
-      Session.get 'dateKey'
-
-    number: ->
-      Session.get 'numberKey'
+    date:   -> Session.get 'dateKey'
+    number: -> Session.get 'numberKey'
 
   class AbstractInputBehaviour extends FDS.Behaviour
-    _makeInputData: =>
-      id: @data.id
-      labelText: @data.labelText
-      type: @_type
-
-    _onChange: (event, instance) =>
-      value = event.target.value
-      value = @clean value
+    onInput: (event, instance) =>
+      value = @clean event.target.value
       if @isValid value
           @set @parse value
       else
         @set()
 
-    init: (@_type) =>
-
-    format: (value) =>
-      value
-
-    clean: (value) =>
-      value.trim()
-
-    isValid: (value) =>
-      true
-
-    parse: (value) =>
-      value
-
-    @helpers:
-      'inputData': '_makeInputData'
-
-    @events:
-      'input input': '_onChange'
+    clean:   (value) => value.trim()
+    isValid: (value) => true
+    parse:   (value) => value
 
 
   class SessionInputBehaviour extends AbstractInputBehaviour
-    init: (type, @_key) =>
-      super type
-
-    get: =>
-      Session.get @_key
-
-    set: (value) =>
-      Session.set @_key, value
+    init: (@_key) =>
+    get: => Session.get @_key
+    set: (value) => Session.set @_key, value
 
 
   class DateSessionInputBehaviour extends SessionInputBehaviour
-    clean: (value) =>
-      moment super(value), 'YYYY-MM-DD'
-
-    isValid: (value) =>
-      value.isValid()
-
-    parse: (value) =>
-      value.format 'DD MMM YY'
+    type:    'date'
+    clean:   (value) => moment super(value), 'YYYY-MM-DD'
+    isValid: (value) => value.isValid()
+    parse:   (value) => value.format 'DD MMM YY'
 
 
   class NumberSessionInputBehaviour extends SessionInputBehaviour
-    clean: (value) =>
-      parseInt value, 10
-
-    isValid: (value) =>
-      _.isNumber(value) and not _.isNaN value
+    type:    'number'
+    clean:   (value) => parseInt value, 10
+    isValid: (value) => _.isNumber(value) and not _.isNaN value
 
 
-  DateSessionInputBehaviour.attach 'dateInput', 'date', 'dateKey'
-  NumberSessionInputBehaviour.attach 'numberInput', 'number', 'numberKey'
+  class InputBehaviourFactory extends FDS.AbstractBehaviourFactory
+    create: (instance) ->
+      type = instance.data.type
+      switch type
+        when 'date'   then @_createDate()
+        when 'number' then @_createNumber()
+        else throw new Error "Unknown input type #{ type }."
+
+    _createDate:   -> @_create DateSessionInputBehaviour, 'dateKey'
+    _createNumber: -> @_create NumberSessionInputBehaviour, 'numberKey'
+
+    _create: (klass, initArgs...) ->
+      behaviour = new klass
+      behaviour.init initArgs...
+      behaviour
+
+    events: ->
+      input: 'onInput'
+
+  InputBehaviourFactory.attach 'input'
 
