@@ -30,18 +30,6 @@ InputBehaviourFactory.attach 'input'
 
 ## Install
 
-Behaviours is a Meteor package and can be install by running;
-
 ```ShellSession
-$ meteor add fds:behaviours
+$ meteor add coffeescript fds:behaviours
 ```
-
-in a Meteor application. It's designed for use with CoffeeScript, which can
-installed by running;
-
-```ShellSession
-$ meteor add coffeescript
-```
-
-in the same directory.
-
