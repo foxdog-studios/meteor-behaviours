@@ -13,16 +13,16 @@ class BehavioursImpl
   TAG = {}
   TAG_NAME = '_behavioursTag'
 
-  attach: (klass, templateOrName, initArgs) ->
+  attach: (factory, templateOrName) ->
     template = @getTemplate templateOrName
-    @ensureBuidlersArray template
-    builder = @createBuilder klass, template, initArgs
+    @ensureFactoriesArray template
+    builder = @createBuilder factory, template
     index = @pushBuilder builder, template
     @ensureCreatedBehaviourHook template
     @ensureRenderedBehaviourHook template
     @ensureDestroyedBehaviourHook template
-    @mapHelpers klass, template, index, initArgs
-    @mapEvents klass, template, index, initArgs
+    @mapHelpers factory, template, index
+    @mapEvents factory, template, index
     return
 
   getTemplate: (templateOrName) ->
@@ -31,17 +31,18 @@ class BehavioursImpl
       template = Template[name]
       throw new Error "No template named #{ name }." unless template?
     else
-      template = templateOrName  # Already a template
+      template = templateOrName
+      unless template instanceof Template
+        throw new Error "#{ template } is not a template."
     template
 
-  ensureBuidlersArray: (template) ->
+  ensureFactoriesArray: (template) ->
     template[BUILDERS_NAME] ?= []
 
-  createBuilder: (klass, template, initArgs) ->
+  createBuilder: (factory, template) ->
     (instance) ->
-      behaviour = new klass
+      behaviour = factory.create instance
       behaviour.attach instance
-      behaviour.init initArgs...
       behaviour
 
   pushBuilder: (builder, template) ->
@@ -96,8 +97,8 @@ class BehavioursImpl
     wrapper[TAG_NAME] = TAG
     template[hookName] = wrapper
 
-  mapHelpers: (klass, template, index, initArgs) ->
-    schema = @expandSchema klass, klass.helpers, initArgs
+  mapHelpers: (factory, template, index) ->
+    schema = @expandSchema factory, factory.helpers
     helpers = {}
     for helperName, methodName of schema
       helpers[helperName] = @createHelper methodName, index
@@ -111,8 +112,8 @@ class BehavioursImpl
       behaviour.context = null
       result
 
-  mapEvents: (klass, template, index, initArgs) ->
-    schema = @expandSchema klass, klass.events, initArgs
+  mapEvents: (factory, template, index) ->
+    schema = @expandSchema factory, factory.events
     events = {}
     for eventType, methodName of schema
       events[eventType] = @createEvent methodName, index
@@ -125,8 +126,8 @@ class BehavioursImpl
       behaviour[methodName].apply behaviour, arguments
       behaviour.context = null
 
-  expandSchema: (klass, schema, initArgs) ->
+  expandSchema: (factory, schema) ->
     if _.isFunction schema
-      schema = schema.apply klass, initArgs
+      schema = schema.call factory
     schema
 

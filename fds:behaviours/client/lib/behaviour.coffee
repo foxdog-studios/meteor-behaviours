@@ -1,5 +1,4 @@
 'use strict'
-'use strict'
 
 class FDS.Behaviour
   constructor: ->
@@ -9,7 +8,6 @@ class FDS.Behaviour
     @instance  = null
     @lastNode  = null
     @view      = null
-    return
 
   attach: (instance) =>
     @data      = instance.data
@@ -49,12 +47,4 @@ class FDS.Behaviour
 
   parentData: ->
     Template.parentData.apply null, arguments
-
-  @helpers: {}
-
-  @events: {}
-
-  @attach: (template, initArgs...) ->
-    PKG.Behaviours.attach this, template, initArgs
-    return
 

@@ -1,6 +1,67 @@
 # Behaviours
 
-Reuse, inherit, and extend your Meteor templates.
+**Inherit, extend, and reuse the code behind your Meteor templates.**
+
+Here's an example that's too simple to justify the use of Behaviours, but think about larger, more complex templates. [See it live][1].
+
+
+1.  Create some templates:
+
+    ```Handlebars
+    <template name="input">
+      <input type="{{type}}" class="form-control">
+    </template>
+    <template name="dateInput">{{> input inputData}}</template>
+    <template name="numberInput">{{> input inputData}}</template>
+    ```
+
+1.  Encapsulate behaviour in CoffeeScript classes that extend `FDS.Behaviour`.
+
+    ```CoffeeScript
+    class AbstractInputBehaviour extends FDS.Behaviour
+      _makeInputData: =>
+        id: @data.id
+        labelText: @data.labelText
+        type: @_type
+
+      _onChange: (event, instance) =>
+        value = event.target.value
+        value = @clean value
+        if @isValid value
+            @set @parse value
+        else
+          @set()
+
+      init: (@_type) =>
+      format: (value) => value
+      clean: (value) => value.trim()
+      isValid: (value) => true
+      parse:  (value) => value
+      @helpers: 'inputData': '_makeInputData'
+      @events: 'input input': '_onChange'
+
+    class SessionInputBehaviour extends AbstractInputBehaviour
+      init: (type, @_key) => super type
+      get: => Session.get @_key
+      set: (value) => Session.set @_key, value
+
+    class DateSessionInputBehaviour extends SessionInputBehaviour
+      clean: (value) => moment super(value), 'YYYY-MM-DD'
+      isValid: (value) => value.isValid()
+      parse: (value) => value.format 'DD MMM YY'
+
+    class NumberSessionInputBehaviour extends SessionInputBehaviour
+      clean: (value) => parseInt value, 10
+      isValid: (value) => _.isNumber(value) and not _.isNaN value
+
+    ```
+
+3.  Attach your behaviours to your templates.
+
+    ```CoffeeScript
+    DateSessionInputBehaviour.attach 'dateInput', 'date', 'dateKey'
+    NumberSessionInputBehaviour.attach 'numberInput', 'number', 'numberKey'
+    ```
 
 
 ## Install
@@ -15,52 +76,6 @@ inside a meteor application. It's designed for use with CoffeeScript, which can 
 
 ```ShellSession
 $ meteor add coffeescript
-```
-
-
-## Quick start
-
-Create your templates as normal;
-
-**example.html**
-```Handlebars
-<body>{{> upper "hello"}} {{> lower "WORLD"}}</body>
-<template name="lower"><button>{{text}}</button></template>
-<template name="upper"><button>{{text}}</button></template>
-```
-
-**example.coffee**
-```CoffeeScript
-class MyBehaviour extends FDS.Behaviours
-  init: (@_process) ->
-    # Called just after instantiation, arguments come from [1].
-
-  # Like Template hooks.
-  created: ->
-  rendered: ->
-  destroyed: ->
-
-  _getText: ->
-    # this is allow the MyBehaviour instance, even in helpers.
-    # The _normal_ this is always available via @context.
-    @_process @data.text
-
-  _onClick: (event, template) ->
-    # Direct access to the Template instance API.
-    @findAll 'button'
-
-   @helpers:
-     text: '_getText'
-
-   @events:
-     click: '_onClick'
-
-# For every upper instance, an instance of MyBehaviour with an upper
-# case function will be created add attached to the template instance.
-MyBehaviour.attach 'upper', (text) -> text.toUpperCase()  # [1]
-
-# Same as above but with the lower template and a lower case function.
-MyBehaviour.attach 'lower', (text) -> text.toLowerCase()
 ```
 
 
@@ -276,3 +291,7 @@ See Meteor documentation.
   * _instance_.find()
   * _instance_.findAll()
   * _instance_.parentData()
+
+
+[1]: http://behaviours.meteor.com/
+

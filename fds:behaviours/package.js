@@ -1,7 +1,7 @@
 Package.describe({
   name: 'fds:behaviours',
   summary: "[DON'T USE] Structured code reuse for template",
-  version: '0.0.0',
+  version: '1.0.0',
   git: 'https://github.com/foxdog-studios/meteor-behaviours.git'
 });
 
@@ -13,6 +13,7 @@ Package.onUse(function(api) {
   api.addFiles([
     'client/lib/package_scope.js',
       'client/lib/behaviour.coffee',
+      'client/lib/behaviour_factory.coffee',
       'client/lib/behaviours.coffee',
       'client/lib/export.js',
   ], 'client');
@@ -23,6 +24,5 @@ Package.onTest(function(api) {
   api.use('tinytest');
   api.use('coffeescript');
   api.use('fds:behaviours');
-  api.addFiles('tests.coffee', 'client');
 });
 

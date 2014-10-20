@@ -1,0 +1,37 @@
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h1>Behaviours example</h1>
+      </div>
+      <div class="col-md-12">
+        <p><a href="https://github.com/foxdog-studios/meteor-behaviours"
+              target="_blank">
+          View the code on GitHub
+        </a></p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <form role="form">
+          {{> input type="date"   id="date"   labelText="Date"  }}
+          {{> input type="number" id="number" labelText="Number"}}
+        </form>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <pre>Session.get('dateKey')   -> {{date}}</pre>
+        <pre>Session.get('numberKey') -> {{number}}</pre>
+      </div>
+    </div>
+  </div>
+</body>
+
+<template name="input">
+  <div class="form-group">
+    <label class="control-label" for="{{id}}">{{labelText}}</label>
+    <input type="{{type}}" class="form-control" id="{{id}}">
+  </div>
+</template>
+
