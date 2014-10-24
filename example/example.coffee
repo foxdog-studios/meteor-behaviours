@@ -23,14 +23,14 @@ if Meteor.isClient
 
 
   class DateSessionInputBehaviour extends SessionInputBehaviour
-    type:    'date'
+    behaviour: -> 'date'
     clean:   (value) => moment super(value), 'YYYY-MM-DD'
     isValid: (value) => value.isValid()
     parse:   (value) => value.format 'DD MMM YY'
 
 
   class NumberSessionInputBehaviour extends SessionInputBehaviour
-    type:    'number'
+    behaviour: 'number'
     clean:   (value) => parseInt value, 10
     isValid: (value) => _.isNumber(value) and not _.isNaN value
 
@@ -50,6 +50,9 @@ if Meteor.isClient
       behaviour = new klass
       behaviour.init initArgs...
       behaviour
+
+    helpers: ->
+      behaviour: 'behaviour'
 
     events: ->
       input: 'onInput'
