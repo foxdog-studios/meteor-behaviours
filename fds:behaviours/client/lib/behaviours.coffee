@@ -108,7 +108,11 @@ class BehavioursImpl
     ->
       behaviour = Template.instance()._behaviours[index]
       behaviour.context = this
-      result = behaviour[methodName].apply behaviour, arguments
+      helper = behaviour[methodName]
+      result = if _.isFunction helper
+        helper.apply behaviour, arguments
+      else
+        helper
       behaviour.context = null
       result
 
