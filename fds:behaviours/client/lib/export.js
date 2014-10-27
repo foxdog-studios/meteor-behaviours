@@ -1,8 +1,7 @@
-'use strict';
+// Strict mode cannot be used as it prevents the creation of package
+// scope variables.
 
-if (_.isUndefined(this.FDS)) {
-  this.FDS = {};
-}
-
-this.FDS = _.extend(this.FDS, FDS);
+FDS = FDS || {};
+Pkg = {};
+__coffeescriptShare = {};
 

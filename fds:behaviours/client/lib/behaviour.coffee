@@ -9,7 +9,7 @@ class FDS.Behaviour
     @lastNode  = null
     @view      = null
 
-  attach: (instance) =>
+  attach: (instance) ->
     @data      = instance.data
     @firstNode = instance.firstNode
     @instance  = instance
