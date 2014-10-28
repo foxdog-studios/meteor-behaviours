@@ -43,6 +43,7 @@ class BehaviourAttacherImpl
     (instance) ->
       behaviour = factory.create instance
       behaviour.attach instance
+      behaviour.init()
       behaviour
 
   pushBuilder: (builder, template) ->

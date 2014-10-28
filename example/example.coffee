@@ -17,9 +17,10 @@ if Meteor.isClient
 
 
   class SessionInputBehaviour extends AbstractInputBehaviour
-    init: (@_key) =>
-    get: => Session.get @_key
-    set: (value) => Session.set @_key, value
+    constructor: (@_key) -> super()
+    init: => Session.set @_key
+    get:  => Session.get @_key
+    set:  (value) => Session.set @_key, value
 
 
   class DateSessionInputBehaviour extends SessionInputBehaviour
@@ -46,16 +47,9 @@ if Meteor.isClient
     _createDate:   -> @_create DateSessionInputBehaviour, 'dateKey'
     _createNumber: -> @_create NumberSessionInputBehaviour, 'numberKey'
 
-    _create: (klass, initArgs...) ->
-      behaviour = new klass
-      behaviour.init initArgs...
-      behaviour
-
-    helpers: ->
-      behaviour: 'behaviour'
-
-    events: ->
-      input: 'onInput'
+    _create: (klass, args...) -> new klass args...
+    helpers: -> behaviour: 'behaviour'
+    events:  -> input: 'onInput'
 
   InputBehaviourFactory.attach 'input'
 
