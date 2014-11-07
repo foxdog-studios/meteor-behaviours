@@ -13,6 +13,6 @@ class FDS.AbstractBehaviourFactory
   @attach: (template, initArgs...) ->
     factory = new this
     factory.init initArgs...
-    PKG.Behaviours.attach factory, template
+    Pkg.BehaviourAttacher.attach factory, template
     return
 

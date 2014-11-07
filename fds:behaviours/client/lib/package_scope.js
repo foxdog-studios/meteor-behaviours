@@ -1,4 +1,0 @@
-FDS = {};
-PKG = {};
-__coffeescriptShare = {};
-

@@ -1,13 +1,13 @@
 'use strict'
 
-class PKG.Behaviours
+class Pkg.BehaviourAttacher
   instance = null
 
   @attach: ->
-    (instance ?= new BehavioursImpl).attach.apply instance, arguments
+    (instance ?= new BehaviourAttacherImpl).attach.apply instance, arguments
 
 
-class BehavioursImpl
+class BehaviourAttacherImpl
   BEHAVIOURS_NAME = '_behaviours'
   BUILDERS_NAME = '_behaviours'
   TAG = {}
@@ -43,6 +43,7 @@ class BehavioursImpl
     (instance) ->
       behaviour = factory.create instance
       behaviour.attach instance
+      behaviour.init()
       behaviour
 
   pushBuilder: (builder, template) ->
