@@ -11,10 +11,10 @@ class AbstractInputBehaviour extends FDS.Behaviour
   onInput: (event, instance) ->
     console.log @parse event.target.value
 
-class NumberInputBehaviour extends FDS.Behaviour
+class NumberInputBehaviour extends AbstractInputBehaviour
   parse: (value) -> parseInt value, 10
 
-class DateInputBehaviour extends FDS.Behaviour
+class DateInputBehaviour extends AbstractInputBehaviour
   parse: (value) -> moment value.trim(), 'YYYY-DD-MM'
 
 class InputBehaviourFactory extends FDS.AbstractBehaviourFactroy

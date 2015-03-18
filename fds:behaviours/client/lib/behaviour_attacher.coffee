@@ -16,11 +16,9 @@ class BehaviourAttacherImpl
   attach: (factory, templateOrName) ->
     template = @getTemplate templateOrName
     @ensureFactoriesArray template
+    @ensureBehaviourHooks template
     builder = @createBuilder factory, template
     index = @pushBuilder builder, template
-    @ensureCreatedBehaviourHook template
-    @ensureRenderedBehaviourHook template
-    @ensureDestroyedBehaviourHook template
     @mapHelpers factory, template, index
     @mapEvents factory, template, index
     return
@@ -51,8 +49,15 @@ class BehaviourAttacherImpl
     builders.push builder
     builders.length - 1
 
-  ensureCreatedBehaviourHook: (template) ->
-    @ensureBehaviourHook template, 'created', ->
+  ensureBehaviourHooks: (template) ->
+    if template[TAG_NAME] != TAG
+      template[TAG_NAME] = TAG
+      @attachCreatedBehaviourHook template
+      @attachRenderedBehaviourHook template
+      @attachDestroyedBehaviourHook template
+
+  attachCreatedBehaviourHook: (template) ->
+    template.onCreated ->
       @[BEHAVIOURS_NAME] = for builder in template[BUILDERS_NAME]
         builder this
       for behaviour in @[BEHAVIOURS_NAME]
@@ -61,16 +66,16 @@ class BehaviourAttacherImpl
         behaviour.context = null
       return
 
-  ensureRenderedBehaviourHook: (template) ->
-    @ensureBehaviourHook template, 'rendered', ->
+  attachRenderedBehaviourHook: (template) ->
+    template.onRendered ->
       for behaviour in @[BEHAVIOURS_NAME]
         behaviour.context = this
         behaviour.rendered.apply behaviour, arguments
         behaviour.context = null
       return
 
-  ensureDestroyedBehaviourHook: (template) ->
-    @ensureBehaviourHook template, 'destroyed', ->
+  attachDestroyedBehaviourHook: (template) ->
+    template.onDestroyed ->
       for behaviour in @[BEHAVIOURS_NAME]
         behaviour.context = this
         behaviour.destroyed.apply behaviour, arguments
@@ -78,25 +83,6 @@ class BehaviourAttacherImpl
       for behaviour in @[BEHAVIOURS_NAME]
         behaviour.detach()
       @[BEHAVIOURS_NAME] = null
-
-  ensureBehaviourHook: (template, hookName, hook) ->
-    original = @getOriginalHook template, hookName
-    if original? or not template[hookName]?
-      @attachBehaviourHook template, hookName, hook, original
-
-  getOriginalHook: (template, hookName) ->
-    original = template[hookName]
-    if original? and original[TAG_NAME] == TAG
-      original = null
-    original
-
-  attachBehaviourHook: (template, hookName, hook, original) ->
-    wrapper = ->
-      original.apply this, arguments if original?
-      hook.apply this, arguments
-      return  # Don't leak the hook's return value.
-    wrapper[TAG_NAME] = TAG
-    template[hookName] = wrapper
 
   mapHelpers: (factory, template, index) ->
     schema = @expandSchema factory, factory.helpers
