@@ -3,12 +3,12 @@
 Package.describe({
   name: 'fds:behaviours',
   summary: 'Structured code reuse for templates',
-  version: '2.0.1',
+  version: '3.0.0',
   git: 'https://github.com/foxdog-studios/meteor-behaviours.git'
 });
 
 Package.onUse(function(api) {
-  api.versionsFrom('METEOR@0.9.4');
+  api.versionsFrom('1.0.4.1');
   api.use('coffeescript', 'client');
   api.use('templating', 'client');
   api.use('underscore', 'client');

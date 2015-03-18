@@ -3,6 +3,11 @@ if Meteor.isClient
     date:   -> Session.get 'dateKey'
     number: -> Session.get 'numberKey'
 
+
+  Template.input.onCreated ->
+    console.log 'Normal hooks still work'
+
+
   class AbstractInputBehaviour extends FDS.Behaviour
     onInput: (event, instance) =>
       value = @clean event.target.value
